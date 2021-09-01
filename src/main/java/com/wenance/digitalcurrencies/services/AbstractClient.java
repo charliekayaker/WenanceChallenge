@@ -1,0 +1,38 @@
+package com.wenance.digitalcurrencies.services;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
+import org.apache.log4j.Logger;
+
+import com.wenance.digitalcurrencies.constants.Constants;
+import com.wenance.digitalcurrencies.enums.Currencies;
+ 
+
+
+public abstract class AbstractClient implements IService {
+	
+	 protected final String endpoint;	 
+	
+	
+	protected AbstractClient(String url, String contextPath) {
+		this.endpoint = url.concat(contextPath);
+	}
+	
+	
+    protected WebTarget createClient(String path, Currencies e) {
+       
+    	String assembledPath = assembleEndpoint(path, e);
+        Client client = ClientBuilder.newClient();
+        System.out.println(assembledPath);
+        WebTarget target = client.target(assembledPath);
+        return target;
+        
+    }
+	
+	private String assembleEndpoint(String path, Currencies e) {        
+        
+        return endpoint.concat(path).concat(Constants.SLASH + e.getSymbol()).concat(Constants.SLASH + Currencies.USD.getSymbol());
+    }
+}
