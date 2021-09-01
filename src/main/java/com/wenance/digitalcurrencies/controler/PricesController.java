@@ -18,9 +18,9 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("api")  //# http://localhost:9800/api/
 public class PricesController {
 	
-	@ApiOperation(value = "Update data person.", response = String.class, produces = "plain/text"/*"application/json"*/)
+	@ApiOperation(value = "getPrices", response = String.class, produces = "plain/text"/*"application/json"*/)
 	@GetMapping("/")
-	public ResponseEntity<String> getPersonaAsString()
+	public ResponseEntity<String> getPrices()
 			throws Exception {
 		
 		long mediationTime = System.currentTimeMillis();		
