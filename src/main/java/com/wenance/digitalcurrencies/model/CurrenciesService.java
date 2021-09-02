@@ -1,6 +1,7 @@
 package com.wenance.digitalcurrencies.model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.Query;
@@ -20,6 +21,6 @@ public interface CurrenciesService {
 	//a)
 	public void recordPrice(CotizacionDTO data);
 	//b) Mirar repository.
-	public List<PricesDetailsDTO> findBetweenDates(Timestamp from, Timestamp to);
+	public List<PricesDetailsDTO> findBetweenDates(Date from, Date to);
 
 }

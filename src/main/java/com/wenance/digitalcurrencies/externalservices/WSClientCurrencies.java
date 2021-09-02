@@ -1,10 +1,15 @@
 package com.wenance.digitalcurrencies.externalservices;
 
+
+import javax.ws.rs.Produces;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.JSONObject;
+
 import com.wenance.digitalcurrencies.constants.Constants;
+import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.services.AbstractClient;
 import com.wenance.digitalcurrencies.utils.Utils;
@@ -16,12 +21,15 @@ public class WSClientCurrencies extends AbstractClient {
 		super(url, contextPath);		
 	}
 
-	@Override
+	@Override	
+	@Produces("application/json")
 	public Object execute(Object request) {
 		
-		WebTarget client = createClient(Utils.getValueFromProperties(Constants.LAST_PRICE, Constants.ENDPOINT_FILE_PROPERTIES), Currencies.BTC);		
-		Response response = client.request(MediaType.APPLICATION_JSON).get();	
-		return response;
+		WebTarget client = createClient(Utils.getValueFromProperties(Constants.LAST_PRICE, Constants.ENDPOINT_FILE_PROPERTIES), Currencies.BTC);
+		
+		Response response = client.request(MediaType.APPLICATION_JSON).get();
+		
+		return response.readEntity(CotizacionDTO.class);
 	}
 	
 	

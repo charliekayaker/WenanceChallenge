@@ -4,7 +4,13 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+
+import com.wenance.digitalcurrencies.constants.Constants;
 
 
 public class Utils {
@@ -26,4 +32,14 @@ public class Utils {
 		return prop.getProperty(key);		
 	}
 	
+	public static Date getDateFromString(String sDate) throws ParseException {
+		
+		DateFormat inDateFormat = new SimpleDateFormat(Constants.DATE_TEMPLATE);			
+				
+		Date date = inDateFormat.parse(sDate);
+		
+		return date;
+	}
+	
+		
 }

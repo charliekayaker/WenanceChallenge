@@ -24,8 +24,7 @@ public abstract class AbstractClient implements IService {
     protected WebTarget createClient(String path, Currencies e) {
        
     	String assembledPath = assembleEndpoint(path, e);
-        Client client = ClientBuilder.newClient();
-        System.out.println(assembledPath);
+        Client client = ClientBuilder.newClient();        
         WebTarget target = client.target(assembledPath);
         return target;
         

@@ -2,6 +2,8 @@ package com.wenance.digitalcurrencies.externalservices;
 
 import java.util.logging.Logger;
 
+import org.json.JSONObject;
+
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.utils.Utils;
 
@@ -17,17 +19,17 @@ public class WSClientCurrenciesImpl {
 			ws = new WSClientCurrencies(url, contextPath);
 	 }
 
-	public String getBTCPrice() {
+	public Object getBTCPrice() {
 		
-		String response =  (String) ws.execute("");
+		Object response =  ws.execute(null);
+		
 		return response;
 	}
 	
-	
-
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		WSClientCurrenciesImpl ws = new WSClientCurrenciesImpl();
-		ws.getBTCPrice();
-	}*/
+		System.out.println("ws " + ws.getBTCPrice());
+	}
+	
 
 }

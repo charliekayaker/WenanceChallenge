@@ -1,12 +1,9 @@
 package com.wenance.digitalcurrencies.model;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
@@ -29,10 +26,11 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	}
 
 	@Override
-	public List<PricesDetailsDTO> findBetweenDates(Timestamp from, Timestamp to) {		
+	public List<PricesDetailsDTO> findBetweenDates(Date from, Date to) throws NullPointerException  {		
 		return currenciesrepository.getPricesDetailsFromPeriod(from, to);	
 	}
-
+	
+	
 
 
 	

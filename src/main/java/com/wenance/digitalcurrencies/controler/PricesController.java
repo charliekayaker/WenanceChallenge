@@ -1,15 +1,15 @@
 package com.wenance.digitalcurrencies.controler;
 
-import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +18,16 @@ import com.wenance.digitalcurrencies.dtos.PricesDetailsDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.exception.PricesNotFoundException;
 import com.wenance.digitalcurrencies.model.CurrenciesServiceImpl;
+import com.wenance.digitalcurrencies.utils.Utils;
 
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * *Podríamos hacer la conversión en un controlador separado a la consulta de precios, pero para acelerar un poco el proceso
+ * vamos a hacerlo en este mismo controller.
+ * @author charlie
+ *
+ */
 
 @RestController
 @Singleton
@@ -29,22 +36,42 @@ public class PricesController {
 	
 	
 	@ApiOperation(value = "getPrices", response = CotizacionDTO.class, produces ="application/json")
-	@GetMapping("/")
-	public ResponseEntity<List<PricesDetailsDTO>> getPrices()
-			throws Exception {
+	@GetMapping("/getPrices")
+	public ResponseEntity<CotizacionDTO> getPrices() {
 		
-		CotizacionDTO cot =  new CotizacionDTO();
-		cot.setCurrency(Currencies.BTC.getSymbol());
-		cot.setPrice("$45.23");
-		///		
-			CurrenciesServiceImpl currenciesServiceImpl = new CurrenciesServiceImpl();
-			List<PricesDetailsDTO> result = currenciesServiceImpl.findBetweenDates(new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
-			if(result == null)
-				throw new PricesNotFoundException(); // Hay que manejarlo en CurrenciesServiceImpl
-		///
+		CotizacionDTO result =  new CotizacionDTO();
+		result.setCurr1(Currencies.BTC.getSymbol());
+		result.setLprice("$45.23");
+	
 		
 		return ResponseEntity.ok(result);
 	}
+	
+
+	@ApiOperation(value = "getPricesBetween", response = PricesDetailsDTO.class, produces ="application/json")
+	@GetMapping("/getPricesBetween/{from}/to/{to}")
+	public ResponseEntity<List<PricesDetailsDTO>> getPricesBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to) {
+				
+			System.out.println("from : " + from + " to : " + to);	
+			CurrenciesServiceImpl currenciesServiceImpl = new CurrenciesServiceImpl();
+			List<PricesDetailsDTO> result = null;
+			
+			try {				 
+				 result = currenciesServiceImpl.findBetweenDates(Utils.getDateFromString(from), Utils.getDateFromString(to));
+			}catch(NullPointerException nex) {
+				throw new PricesNotFoundException();
+			} catch (ParseException e) {				
+				e.printStackTrace();
+			}	
+		
+		
+		return ResponseEntity.ok(result);
+	}
+	
+
+	
+	
+	
 	
 	
 	
