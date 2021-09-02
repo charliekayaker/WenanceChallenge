@@ -6,5 +6,6 @@ public @Data class CotizacionDTO {
 	
 	private String price;
 	private String currency;
+	
 
 }

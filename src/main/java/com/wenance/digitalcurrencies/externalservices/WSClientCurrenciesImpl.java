@@ -25,9 +25,9 @@ public class WSClientCurrenciesImpl {
 	
 	
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		WSClientCurrenciesImpl ws = new WSClientCurrenciesImpl();
 		ws.getBTCPrice();
-	}
+	}*/
 
 }
