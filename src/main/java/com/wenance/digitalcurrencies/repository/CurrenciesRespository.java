@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.PricesDetailsDTO;
 
-public interface CurrenciesRespository extends MongoRepository<CotizacionDTO, String> { //VOY A TENER QUE HACER UNA CLASE PRICE QUE SEA MODELO DE LA COTIZACION Y ALGUN ID
+public interface CurrenciesRespository extends MongoRepository<CotizacionDTO, String> { 
 		//b)
 		@Query("{'date' : {$gte: ?0, $lte:?1 }}")	
 		public List<PricesDetailsDTO> getPricesDetailsFromPeriod(Date from, Date to) throws NullPointerException;

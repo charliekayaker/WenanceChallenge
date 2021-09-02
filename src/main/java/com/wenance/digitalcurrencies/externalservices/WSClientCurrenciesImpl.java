@@ -3,10 +3,12 @@ package com.wenance.digitalcurrencies.externalservices;
 import java.util.logging.Logger;
 
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.utils.Utils;
 
+@Component
 public class WSClientCurrenciesImpl {
 	
 	 private static final Logger log = Logger.getLogger(WSClientCurrencies.class.getName());

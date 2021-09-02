@@ -1,5 +1,6 @@
 package com.wenance.digitalcurrencies.jobs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -10,16 +11,17 @@ import com.wenance.digitalcurrencies.model.CurrenciesServiceImpl;
 @Service
 public class JobManager {
 	
-	WSClientCurrenciesImpl ws;
+	@Autowired
+	WSClientCurrenciesImpl wsClientCurrenciesImpl;
+	@Autowired
+	CurrenciesServiceImpl currenciesServiceImpl;
 	
-	public JobManager() {		
-		ws = new WSClientCurrenciesImpl();
-	}
-	
+		
 	@Scheduled(fixedRateString = "${saveCurrencies.job}")
-	public void saveCurrentPrices() {
-		System.out.println("TEST");
-		new CurrenciesServiceImpl().recordPrice((CotizacionDTO) ws.getBTCPrice());
+	public void saveCurrentPrices() {		
+		CotizacionDTO cotizacionDTO = (CotizacionDTO) wsClientCurrenciesImpl.getBTCPrice();
+		System.out.println(cotizacionDTO.getLprice());
+		currenciesServiceImpl.recordPrice(cotizacionDTO);
 	}
 
 

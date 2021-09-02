@@ -22,6 +22,7 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 
 	@Override
 	public void recordPrice(CotizacionDTO data) {
+		
 		currenciesrepository.insert(data);
 	}
 

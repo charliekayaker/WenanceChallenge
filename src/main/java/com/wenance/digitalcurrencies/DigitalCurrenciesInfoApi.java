@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+
 //@ComponentScan(basePackages="com.wenance.digitalcurrencies")
 public class DigitalCurrenciesInfoApi {
 
