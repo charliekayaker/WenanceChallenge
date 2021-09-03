@@ -21,9 +21,13 @@ public abstract class AbstractClient implements IService {
 	}
 	
 	
-    protected WebTarget createClient(String path, Currencies e) {
-       
-    	String assembledPath = assembleEndpoint(path, e);
+    protected WebTarget createClient(String path, Object e) {       
+    	
+    	if(!(e instanceof Currencies)) {
+    		throw new IllegalArgumentException();
+    	} //Acá podriamos validar a futuro los diferentes objetos que va aceptar este método, hoy solo acepta Currencies pero lo dejemos como Object para que sea genérico y reutilizable
+    	
+    	String assembledPath = assembleEndpoint(path, (Currencies) e);
         Client client = ClientBuilder.newClient();        
         WebTarget target = client.target(assembledPath);
         return target;

@@ -24,8 +24,8 @@ public class WSClientCurrencies extends AbstractClient {
 	@Override	
 	@Produces("application/json")
 	public Object execute(Object request) {
-		
-		WebTarget client = createClient(Utils.getValueFromProperties(Constants.LAST_PRICE, Constants.ENDPOINT_FILE_PROPERTIES), Currencies.BTC);
+				
+		WebTarget client = createClient(Utils.getValueFromProperties(Constants.LAST_PRICE, Constants.ENDPOINT_FILE_PROPERTIES), request);
 		
 		Response response = client.request(MediaType.APPLICATION_JSON).get();
 		

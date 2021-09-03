@@ -19,5 +19,10 @@ public @Data class CotizacionDTO {
 	
 	private Date timestamp;
 	
+	public Double getLpriceAsDouble() {
+		
+		return Double.parseDouble(lprice);
+	}
+	
 
 }

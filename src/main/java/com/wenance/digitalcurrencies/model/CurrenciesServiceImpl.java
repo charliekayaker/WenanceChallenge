@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.repository.CurrenciesRespository;
 
@@ -26,7 +27,7 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 
 	@Override
 	public List<CotizacionDTO> findBetweenDates(Date from, Date to) throws NullPointerException  {		
-		return currenciesrepository.findByTimestampBetween(from, to);	
+		return currenciesrepository.findByTimestampBetween(new Date(from.getTime() - Constants.TIMEOFFSET), new Date(to.getTime() - Constants.TIMEOFFSET));	
 	}
 	
 	@Override

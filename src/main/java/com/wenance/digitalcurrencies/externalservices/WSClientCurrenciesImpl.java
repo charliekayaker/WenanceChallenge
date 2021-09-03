@@ -1,17 +1,17 @@
 package com.wenance.digitalcurrencies.externalservices;
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
-import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import com.wenance.digitalcurrencies.constants.Constants;
+import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.utils.Utils;
 
 @Component
 public class WSClientCurrenciesImpl {
 	
-	 private static final Logger log = Logger.getLogger(WSClientCurrencies.class.getName());
+//	 private static final Logger log = Logger.getLogger(WSClientCurrencies.class.getName());
 	 
 	 WSClientCurrencies ws = null;
 	 
@@ -22,7 +22,12 @@ public class WSClientCurrenciesImpl {
 	 }
 
 	public Object getBTCPrice() {		
-		Object response =  ws.execute(null);		
+		Object response =  ws.execute(Currencies.BTC);
+		return response;
+	}
+	
+	public Object getETHPrice() {		
+		Object response =  ws.execute(Currencies.ETH);		
 		return response;
 	}
 

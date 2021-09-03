@@ -44,8 +44,7 @@ public class PricesController {
 	
 	@ApiOperation(value = "getPrices", response = CotizacionDTO.class, produces ="application/json")
 	@GetMapping("/getPrices")
-	public ResponseEntity<List<CotizacionDTO>> getPrices() {
-		
+	public ResponseEntity<List<CotizacionDTO>> getPrices() {		
 			
 		
 		return ResponseEntity.ok(currenciesServiceImpl.findAll());
@@ -55,13 +54,12 @@ public class PricesController {
 	@ApiOperation(value = "getPricesBetween", response = CotizacionDTO.class, produces ="application/json")
 	@GetMapping("/getPricesBetween/{from}/to/{to}")
 	public ResponseEntity<List<CotizacionDTO>> getPricesBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to) {
-				
-			System.out.println("from : " + from + " to : " + to);	
 			
 			List<CotizacionDTO> result = null;
 			
 			try {				 
 				 result = currenciesServiceImpl.findBetweenDates(Utils.getDateFromString(from), Utils.getDateFromString(to));
+				 System.out.println("Statistics :  " + result.stream().mapToDouble(CotizacionDTO::getLpriceAsDouble).summaryStatistics());
 			}catch(NullPointerException nex) {
 				throw new PricesNotFoundException();
 			} catch (ParseException e) {				
