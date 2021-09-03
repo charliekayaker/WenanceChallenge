@@ -9,6 +9,7 @@ public class Constants {
 	public static final String DATE_TEMPLATE= "dd-MM-yyyy.HH:mm:ss";
 	public static final String INPUT_DATE = "dd-MM-yyyy";
 	public static final String GMT = "GMT";
+	public static final long TIMEOFFSET = 3600000*3;
 	
 	/**
 	 *  Acá usamos este archivo dentro del proyecto pero en la práctica se usa algo como 

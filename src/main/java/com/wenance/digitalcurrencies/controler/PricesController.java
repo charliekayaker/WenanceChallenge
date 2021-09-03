@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.PricesDetailsDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.exception.PricesNotFoundException;
+import com.wenance.digitalcurrencies.externalservices.WSClientCurrenciesImpl;
 import com.wenance.digitalcurrencies.model.CurrenciesServiceImpl;
 import com.wenance.digitalcurrencies.utils.Utils;
 
@@ -34,27 +36,29 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("api")  //# http://localhost:9800/api/
 public class PricesController {
 	
+	@Autowired
+	WSClientCurrenciesImpl ws;
+	@Autowired
+	CurrenciesServiceImpl currenciesServiceImpl;
+	
 	
 	@ApiOperation(value = "getPrices", response = CotizacionDTO.class, produces ="application/json")
 	@GetMapping("/getPrices")
-	public ResponseEntity<CotizacionDTO> getPrices() {
+	public ResponseEntity<List<CotizacionDTO>> getPrices() {
 		
-		CotizacionDTO result =  new CotizacionDTO();
-		result.setCurr1(Currencies.BTC.getSymbol());
-		result.setLprice("$45.23");
-	
+			
 		
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(currenciesServiceImpl.findAll());
 	}
 	
 
-	@ApiOperation(value = "getPricesBetween", response = PricesDetailsDTO.class, produces ="application/json")
+	@ApiOperation(value = "getPricesBetween", response = CotizacionDTO.class, produces ="application/json")
 	@GetMapping("/getPricesBetween/{from}/to/{to}")
-	public ResponseEntity<List<PricesDetailsDTO>> getPricesBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to) {
+	public ResponseEntity<List<CotizacionDTO>> getPricesBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to) {
 				
 			System.out.println("from : " + from + " to : " + to);	
-			CurrenciesServiceImpl currenciesServiceImpl = new CurrenciesServiceImpl();
-			List<PricesDetailsDTO> result = null;
+			
+			List<CotizacionDTO> result = null;
 			
 			try {				 
 				 result = currenciesServiceImpl.findBetweenDates(Utils.getDateFromString(from), Utils.getDateFromString(to));
@@ -64,6 +68,7 @@ public class PricesController {
 				e.printStackTrace();
 			}	
 		
+			System.out.println("SIZE : " + result.size());
 		
 		return ResponseEntity.ok(result);
 	}

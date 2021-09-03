@@ -1,13 +1,10 @@
 package com.wenance.digitalcurrencies.model;
 
-import java.sql.Timestamp;
+
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
-import com.wenance.digitalcurrencies.dtos.PricesDetailsDTO;
 
 /**
  * Acá utilizamos la etiqueta superior @Service para hacer programación 
@@ -21,6 +18,8 @@ public interface CurrenciesService {
 	//a)
 	public void recordPrice(CotizacionDTO data);
 	//b) Mirar repository.
-	public List<PricesDetailsDTO> findBetweenDates(Date from, Date to);
+	public List<CotizacionDTO> findBetweenDates(Date from, Date to);
+	
+	public List<CotizacionDTO> findAll();
 
 }

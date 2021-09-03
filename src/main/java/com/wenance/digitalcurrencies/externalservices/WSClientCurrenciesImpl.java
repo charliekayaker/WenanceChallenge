@@ -21,17 +21,9 @@ public class WSClientCurrenciesImpl {
 			ws = new WSClientCurrencies(url, contextPath);
 	 }
 
-	public Object getBTCPrice() {
-		
-		Object response =  ws.execute(null);
-		
+	public Object getBTCPrice() {		
+		Object response =  ws.execute(null);		
 		return response;
 	}
-	
-	public static void main(String[] args) {
-		WSClientCurrenciesImpl ws = new WSClientCurrenciesImpl();
-		System.out.println("ws " + ws.getBTCPrice());
-	}
-	
 
 }

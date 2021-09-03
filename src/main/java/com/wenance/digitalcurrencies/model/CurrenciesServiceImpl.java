@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
-import com.wenance.digitalcurrencies.dtos.PricesDetailsDTO;
 import com.wenance.digitalcurrencies.repository.CurrenciesRespository;
 
 
@@ -21,14 +20,18 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	private CurrenciesRespository currenciesrepository;
 
 	@Override
-	public void recordPrice(CotizacionDTO data) {
-		
+	public void recordPrice(CotizacionDTO data) {		
 		currenciesrepository.insert(data);
 	}
 
 	@Override
-	public List<PricesDetailsDTO> findBetweenDates(Date from, Date to) throws NullPointerException  {		
-		return currenciesrepository.getPricesDetailsFromPeriod(from, to);	
+	public List<CotizacionDTO> findBetweenDates(Date from, Date to) throws NullPointerException  {		
+		return currenciesrepository.findByTimestampBetween(from, to);	
+	}
+	
+	@Override
+	public List<CotizacionDTO> findAll(){
+		return currenciesrepository.findAll();
 	}
 	
 	

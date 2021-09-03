@@ -1,5 +1,7 @@
 package com.wenance.digitalcurrencies.dtos;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -14,6 +16,8 @@ public @Data class CotizacionDTO {
 	
 	@JsonProperty("curr2")
 	private String curr2;//currencyRef;
+	
+	private Date timestamp;
 	
 
 }

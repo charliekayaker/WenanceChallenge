@@ -1,5 +1,10 @@
-package com.wenance.digitalcurrencies.threads;
+package com.wenance.digitalcurrencies.threads.deprecated;
 
+@Deprecated
+/**
+ * Esto fue reemplazado por spring scheduler
+ * @author charlie
+ * */
 public class Task {
 	
 	//Inyectar la tarea con lambda para que corra cada 10 segs.
