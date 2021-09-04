@@ -34,6 +34,12 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	public List<CotizacionDTO> findAll(){
 		return currenciesrepository.findAll();
 	}
+
+	@Override			 
+	public CotizacionDTO findPriceByTimestamp(MongoDBDate date, String currencie) {
+		 
+		return currenciesrepository.timestampBetweenAndCurr1(date, new MongoDBDate(date.getTime()+999), currencie);
+	}
 	
 	
 

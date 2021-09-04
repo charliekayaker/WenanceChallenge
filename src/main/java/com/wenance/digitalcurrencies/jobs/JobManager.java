@@ -13,9 +13,9 @@ import com.wenance.digitalcurrencies.utils.Utils;
 public class JobManager {
 	
 	@Autowired
-	WSClientCurrenciesImpl wsClientCurrenciesImpl;
+	private WSClientCurrenciesImpl wsClientCurrenciesImpl;
 	@Autowired
-	CurrenciesServiceImpl currenciesServiceImpl;
+	private CurrenciesServiceImpl currenciesServiceImpl;
 	
 	/**
 	 * En este método primero llamamos a la función obtener precio de la moneda digital y luego le añadimos manualmente el timestamp por no traerlo desde el Servicio.
@@ -23,8 +23,19 @@ public class JobManager {
 	 * */
 	@Scheduled(fixedRateString = "${saveCurrencies.job}")
 	public void saveCurrentPrices() {
+	   this.saveBTCPrice();
+	   this.saveETHPrice();
+	}
+	
+	private void saveBTCPrice() {
 		CotizacionDTO dto = (CotizacionDTO) Utils.addCustomTimeStamp(wsClientCurrenciesImpl.getBTCPrice());		
 		currenciesServiceImpl.recordPrice(dto);
+	}
+	
+	private void saveETHPrice() {
+		CotizacionDTO dto = (CotizacionDTO) Utils.addCustomTimeStamp(wsClientCurrenciesImpl.getETHPrice());		
+		currenciesServiceImpl.recordPrice(dto);
+		
 	}
 
 

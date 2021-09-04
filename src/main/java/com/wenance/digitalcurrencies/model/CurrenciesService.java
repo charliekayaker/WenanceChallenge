@@ -21,5 +21,6 @@ public interface CurrenciesService {
 	public List<CotizacionDTO> findBetweenDates(Date from, Date to);
 	
 	public List<CotizacionDTO> findAll();
-
+	
+	public CotizacionDTO findPriceByTimestamp(MongoDBDate date, String currencie);
 }

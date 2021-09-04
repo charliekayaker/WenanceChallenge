@@ -3,9 +3,6 @@ package com.wenance.digitalcurrencies.services;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-
-import org.apache.log4j.Logger;
-
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.enums.Currencies;
  

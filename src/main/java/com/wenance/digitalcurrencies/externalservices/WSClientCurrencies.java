@@ -6,11 +6,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONObject;
-
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
-import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.services.AbstractClient;
 import com.wenance.digitalcurrencies.utils.Utils;
 

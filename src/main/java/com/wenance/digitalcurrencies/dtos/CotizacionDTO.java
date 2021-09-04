@@ -19,10 +19,9 @@ public @Data class CotizacionDTO {
 	
 	private Date timestamp;
 	
-	public Double getLpriceAsDouble() {
-		
+	public Double priceAsDouble() {		
 		return Double.parseDouble(lprice);
 	}
 	
-
+	//poner un getParaTimeStamp que devuelva un String con StringFormat
 }
