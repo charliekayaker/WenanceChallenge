@@ -3,9 +3,14 @@ package com.wenance.digitalcurrencies.dtos;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wenance.digitalcurrencies.enums.Currencies;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public @Data class CotizacionDTO {
 	
 	@JsonProperty("lprice")

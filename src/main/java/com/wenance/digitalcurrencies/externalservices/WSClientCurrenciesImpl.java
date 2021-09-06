@@ -1,25 +1,23 @@
 package com.wenance.digitalcurrencies.externalservices;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 //import java.util.logging.Logger;
 
 import org.springframework.stereotype.Component;
-
-import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.enums.Currencies;
-import com.wenance.digitalcurrencies.utils.Utils;
+import com.wenance.digitalcurrencies.services.IService;
 
 @Component
 public class WSClientCurrenciesImpl {
 	
 //	 private static final Logger log = Logger.getLogger(WSClientCurrencies.class.getName());
 	 
-	 WSClientCurrencies ws = null;
-	 
-	 public WSClientCurrenciesImpl() {
-		 	String url = Utils.getValueFromProperties(Constants.URL, Constants.ENDPOINT_FILE_PROPERTIES);		
-			String contextPath = Utils.getValueFromProperties(Constants.CONTEXT, Constants.ENDPOINT_FILE_PROPERTIES);		
-			ws = new WSClientCurrencies(url, contextPath);
-	 }
+	 @Autowired
+	 @Qualifier("WSClientCurrencies")
+	 IService ws = null;
+	
 
 	public Object getBTCPrice() {		
 		Object response =  ws.execute(Currencies.BTC);

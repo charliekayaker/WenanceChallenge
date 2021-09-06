@@ -3,10 +3,10 @@ package com.wenance.digitalcurrencies.services;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.enums.Currencies;
  
-
 
 public abstract class AbstractClient implements IService {
 	

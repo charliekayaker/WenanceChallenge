@@ -1,22 +1,26 @@
-package com.wenance.digitalcurrencies.controler;
+package com.wenance.digitalcurrencies.controller;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
+import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
-import com.wenance.digitalcurrencies.exception.PricesNotFoundException;
+import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
+import com.wenance.digitalcurrencies.enums.Currencies;
 import com.wenance.digitalcurrencies.model.CurrenciesServiceImpl;
 import com.wenance.digitalcurrencies.model.MongoDBDate;
 import com.wenance.digitalcurrencies.utils.Utils;
@@ -53,17 +57,21 @@ public class PricesController {
 	}
 	
 
-	/**
-	 * PUNTO 1 B - LE FALTA LIMAR LA PRESENTACIÓN. :) TRABAJARLO EN EL SERVICE PARTE DEL DOMINIO
-	 * */
-	@ApiOperation(value = "getPricesBetween", response = CotizacionDTO.class, produces ="application/json")
+	
+	@ApiOperation(value = "getPricesBetween", response = StatisticsDTO.class, produces ="application/json")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
 			@ApiResponse(code = 400, message = "Bad request"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	@GetMapping("/getPricesBetween/{from}/to/{to}/{currencie}")
-	public ResponseEntity<List<CotizacionDTO>> getPricesBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to, @PathVariable String currencie) {
-			System.out.println("currencie : " + currencie);
-			List<CotizacionDTO> result = null;
+	@GetMapping("/getStatistics/{from}/to/{to}/{currencie}")
+	public ResponseEntity<StatisticsDTO> getStatisticsBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to, @PathVariable String currencie) {
+			
+		StatisticsDTO response = null;
+		try {
+			response = currenciesServiceImpl.findStatisticsBetween(Utils.getDateFromString(from), Utils.getDateFromString(to), Currencies.valueOf(currencie));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+			/*List<CotizacionDTO> result = null;
 			
 			try {				 
 				 result = currenciesServiceImpl.findBetweenDates(Utils.getDateFromString(from), Utils.getDateFromString(to)).stream().filter(dto -> dto.getCurr1().equals(currencie))
@@ -73,9 +81,9 @@ public class PricesController {
 				throw new PricesNotFoundException();
 			} catch (ParseException e) {				
 				e.printStackTrace();
-			}			
+			}	*/		
 		
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(response);
 	}
 	
 	
@@ -100,11 +108,28 @@ public class PricesController {
 		return ResponseEntity.ok(response);
 	}
 	
-
+	@ApiOperation(value = "getLastSaved", response = CotizacionDTO.class, produces ="application/json")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
+			@ApiResponse(code = 400, message = "Bad request"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	@GetMapping("/getLast/{currencie}")	
+	public ResponseEntity<CotizacionDTO> getLastSaved(HttpServletRequest request, @PathVariable String currencie){
+		
+		return ResponseEntity.ok(currenciesServiceImpl.findLast(currencie));
+	}
 	
-	
-	
-	
-	
+	@ApiOperation(value = "getPriceInUSD", response = CurrencieValuePayload.class, produces ="application/json")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
+			@ApiResponse(code = 400, message = "Bad request"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	@PostMapping("/getPriceInUSD/{currencie}")	
+	public ResponseEntity<CurrencieValuePayload> getPriceInUSD(HttpServletRequest request, @PathVariable String currencie) throws IOException{
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		CurrencieValuePayload value = mapper.readValue(request.getInputStream(), CurrencieValuePayload.class);
+		
+		return ResponseEntity.ok(currenciesServiceImpl.convertToUSD(new EnqCurrVal_req(Currencies.valueOf(currencie), value.getAmnt())));
+	}
 	
 }

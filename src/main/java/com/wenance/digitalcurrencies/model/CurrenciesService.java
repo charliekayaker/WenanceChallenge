@@ -4,7 +4,12 @@ package com.wenance.digitalcurrencies.model;
 import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Service;
+
+import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
+import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
+import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
+import com.wenance.digitalcurrencies.enums.Currencies;
 
 /**
  * Acá utilizamos la etiqueta superior @Service para hacer programación 
@@ -23,4 +28,10 @@ public interface CurrenciesService {
 	public List<CotizacionDTO> findAll();
 	
 	public CotizacionDTO findPriceByTimestamp(MongoDBDate date, String currencie);
+	
+	public StatisticsDTO findStatisticsBetween(Date from, Date to, Currencies currencie);
+	
+	public CotizacionDTO findLast(String currencie);
+	
+	public CurrencieValuePayload convertToUSD(EnqCurrVal_req request);
 }

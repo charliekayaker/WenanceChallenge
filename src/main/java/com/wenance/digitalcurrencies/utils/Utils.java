@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -76,10 +77,27 @@ public class Utils {
 	public static String getTimesStampAsString() {
 		
 		Date date = new Date(System.currentTimeMillis());
+		
+		return getDateFormated(date);
+	}
+	
+	public static String getPercentDiffBetween(Double avg, Double max) {
+		
+		String result = getCustomDecimalFormat("#.##").format(100-(avg * 100 / max)) + Constants.SPACE + Constants.PERCENT;
+		
+		return result;
+	}
+	
+	public static DecimalFormat getCustomDecimalFormat(String format){
+		
+		return new DecimalFormat(format);
+	}
+	
+	public static String getDateFormated(Date date) {
+		
 		SimpleDateFormat formater = new SimpleDateFormat(Constants.DATE_TEMPLATE);
 		
 		return formater.format(date);
 	}
-	
 
 }
