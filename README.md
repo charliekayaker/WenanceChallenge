@@ -12,4 +12,12 @@ Microservicios sobre la cotización de monedas digitales primeras en el ranking
 
 ##### [Obtener datos guardados paginados](http://localhost:9800/api/getPrices/10?currencie=ETH&from=03-09-2021.00:26:00&to=06-09-2021.15:00:00)
 
-![Alt text](src/main/resources/postConvertToUsd.PNG?raw=true "Optional Title")
+![Alt text](src/main/resources/postConvertToUsd.PNG?raw=true "Test SOAP-UI")
+
+![Alt text](src/main/resources/testPostman.PNG?raw=true "Test Postman")
+
+![Alt text](src/main/resources/test2.PNG?raw=true "SOAP-UI 2")
+
+![Alt text](src/main/resources/test3.PNG?raw=true "SOAP-UI 3")
+
+![Alt text](src/main/resources/test4.PNG?raw=true "SOAP-UI 4")
