@@ -3,12 +3,16 @@ package com.wenance.digitalcurrencies.model;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
 import org.springframework.stereotype.Service;
 
 import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
@@ -106,9 +110,53 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	}
 	
 	
-
-
+	@Override	
+	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to ) {	
+		
+		final int max_rows = 100;
+		
+		if((from != null && from.length()> 1) && (to != null && to.length() > 1))
+		    return getPaginatedInfoWithTimeStampFilter(page, max_rows, from, to);
+		else
+			return getPaginatedInfo(page, max_rows);			
+		
+	}
 	
 	
+	
+	private List<CotizacionDTO> getPaginatedInfo(int page, int pageSize){
+		
+		Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Order.desc("timestamp")));
+				
+		return currenciesrepository.findAll(pageable).toList();
+	}
+	
+	private List<CotizacionDTO> getPaginatedInfoWithTimeStampFilter(int page, int pageSize, String from, String to){
+		
+		List<CotizacionDTO> result = currenciesrepository.findAll().stream()
+			.filter(dto -> dto.getTimestamp()!=null && dto.getTimestamp().getTime()
+				>=Utils.getDateFromString(from).getTime() 
+					&& dto.getTimestamp() !=null && dto.getTimestamp().getTime() 
+				 		<= Utils.getDateFromString(to).getTime()).collect(Collectors.toList()); 
+		
+		System.out.println(result.size()); //total de tamaño - la diferencia que queda por paginar
+		System.out.println("test  " );
+		
+		if(result!=null && result.size()> pageSize ) {
+			if(page * pageSize > result.size()-100)
+				return result.subList(page * pageSize,(page + 1) * pageSize -  (((page+1) * pageSize) - result.size()));
+			else	
+			   return result.subList(page * pageSize, (page + 1) * pageSize);
+		}
+		
+		System.out.println("RESULT SIZE  "+result.size());
+		return result;
+	}
+		
+	/*Pageable pageable = PageRequest.of(page, 200, Sort.by(Sort.Order.desc("timestamp")));
+	
+	result = currenciesrepository.findAll(pageable)
+				.filter(dto -> dto.getTimestamp().getTime() >= Utils.getDateFromString(from).getTime() &&
+						 dto.getTimestamp().getTime() <= Utils.getDateFromString(to).getTime()).toList();*/
 	
 }

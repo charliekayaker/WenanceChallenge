@@ -33,11 +33,21 @@ public class Utils {
 		return prop.getProperty(key);
 	}
 
-	public static Date getDateFromString(String sDate) throws ParseException {
+	public static Date getDateFromString(String sDate)  {
 
 		DateFormat inDateFormat = new SimpleDateFormat(Constants.DATE_TEMPLATE);
-
-		Date date = inDateFormat.parse(sDate);
+		
+		Date date = null;
+		
+		try {
+				date = inDateFormat.parse(sDate);
+				
+		}catch(ParseException e) {
+			
+			e.printStackTrace();
+			
+		}
+				
 
 		return date;
 	}

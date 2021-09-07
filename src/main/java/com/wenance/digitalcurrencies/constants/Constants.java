@@ -13,6 +13,7 @@ public class Constants {
 	public static final long TIMEOFFSET = 3600000*3;
 	public static final String PERCENT = "%";
 	public static final String SPACE = " ";
+	public static final String EMPTY = "";
 	
 	/**
 	 *  Acá usamos este archivo dentro del proyecto pero en la práctica se usa algo como 

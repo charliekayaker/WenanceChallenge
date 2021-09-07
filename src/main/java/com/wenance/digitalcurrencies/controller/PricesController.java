@@ -1,11 +1,11 @@
 package com.wenance.digitalcurrencies.controller;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.QueryParam;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,22 +66,8 @@ public class PricesController {
 	public ResponseEntity<StatisticsDTO> getStatisticsBetween(HttpServletRequest request, @PathVariable String from, @PathVariable String to, @PathVariable String currencie) {
 			
 		StatisticsDTO response = null;
-		try {
-			response = currenciesServiceImpl.findStatisticsBetween(Utils.getDateFromString(from), Utils.getDateFromString(to), Currencies.valueOf(currencie));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-			/*List<CotizacionDTO> result = null;
-			
-			try {				 
-				 result = currenciesServiceImpl.findBetweenDates(Utils.getDateFromString(from), Utils.getDateFromString(to)).stream().filter(dto -> dto.getCurr1().equals(currencie))
-						 .collect(Collectors.toList());
-				 System.out.println("Statistics :  " + result.stream().filter(dto -> dto.getCurr1().equals(currencie)).mapToDouble(CotizacionDTO::priceAsDouble).summaryStatistics());
-			}catch(NullPointerException nex) {
-				throw new PricesNotFoundException();
-			} catch (ParseException e) {				
-				e.printStackTrace();
-			}	*/		
+		
+		response = currenciesServiceImpl.findStatisticsBetween(Utils.getDateFromString(from), Utils.getDateFromString(to), Currencies.valueOf(currencie));
 		
 		return ResponseEntity.ok(response);
 	}
@@ -99,12 +85,8 @@ public class PricesController {
 		
 		CotizacionDTO response = null;
 		
-		try {
-			response = currenciesServiceImpl.findPriceByTimestamp(new MongoDBDate(Utils.getDateFromString(from)), currencie);		
-		} catch (ParseException e) {			
-			e.printStackTrace();
-		}
-		
+		response = currenciesServiceImpl.findPriceByTimestamp(new MongoDBDate(Utils.getDateFromString(from)), currencie);		
+	
 		return ResponseEntity.ok(response);
 	}
 	
@@ -130,6 +112,18 @@ public class PricesController {
 		CurrencieValuePayload value = mapper.readValue(request.getInputStream(), CurrencieValuePayload.class);
 		
 		return ResponseEntity.ok(currenciesServiceImpl.convertToUSD(new EnqCurrVal_req(Currencies.valueOf(currencie), value.getAmnt())));
+	}
+	
+	@ApiOperation(value = "Devuelve todas las cotizaciones paginas, opcionalmente se puede acotar las fechas", response = List.class, produces ="application/json")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
+			@ApiResponse(code = 400, message = "Bad request"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	@GetMapping("/getPrices/{page}")	
+	public ResponseEntity<List<CotizacionDTO>> getPricesInPageNumber(HttpServletRequest request, @PathVariable String page, @QueryParam(value = "currencie") String currencie, 
+			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to) {
+		
+		System.out.println(" " + currencie + " " + from + " " + to + " " + page);
+		return ResponseEntity.ok(currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to));
 	}
 	
 }

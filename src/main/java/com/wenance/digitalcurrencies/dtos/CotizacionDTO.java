@@ -3,7 +3,6 @@ package com.wenance.digitalcurrencies.dtos;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wenance.digitalcurrencies.enums.Currencies;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +26,5 @@ public @Data class CotizacionDTO {
 	public Double priceAsDouble() {		
 		return Double.parseDouble(lprice);
 	}
-	
-	//poner un getParaTimeStamp que devuelva un String con StringFormat
+
 }
