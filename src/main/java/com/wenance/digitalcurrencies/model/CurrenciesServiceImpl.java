@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
-import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
@@ -29,17 +28,18 @@ import com.wenance.digitalcurrencies.utils.Utils;
 @Service
 public class CurrenciesServiceImpl implements CurrenciesService {
 	
-	private final MongoTemplate mongoTemplate;
-	
-	@Autowired
-	private WSPricesInUSDImpl _wsPricesInUSDImpl;
-	
 	public CurrenciesServiceImpl(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
 	}
 	
+	private final MongoTemplate mongoTemplate;	
+	
+	@Autowired
+	private WSPricesInUSDImpl _wsPricesInUSDImpl;
+			
 	@Autowired
 	private CurrenciesRespository currenciesrepository;
+	
 
 	@Override
 	public void recordPrice(CotizacionDTO data) {		
@@ -104,19 +104,19 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	}
 
 	@Override
-	public CurrencieValuePayload convertToUSD(EnqCurrVal_req request) {
+	public CurrencieValuePayload convertToUSD(CurrencieValuePayload request) {
 		
 		return (CurrencieValuePayload) _wsPricesInUSDImpl.convertCurrencietoUSD(request);
 	}
 	
 	
 	@Override	
-	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to ) {	
+	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to , String currencie) {	
 		
 		final int max_rows = 100;
 		
 		if((from != null && from.length()> 1) && (to != null && to.length() > 1))
-		    return getPaginatedInfoWithTimeStampFilter(page, max_rows, from, to);
+		    return getPaginatedInfoWithTimeStampFilter(page, max_rows, from, to, currencie);
 		else
 			return getPaginatedInfo(page, max_rows);			
 		
@@ -131,7 +131,8 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 		return currenciesrepository.findAll(pageable).toList();
 	}
 	
-	private List<CotizacionDTO> getPaginatedInfoWithTimeStampFilter(int page, int pageSize, String from, String to){
+	private List<CotizacionDTO> getPaginatedInfoWithTimeStampFilter(int page, int pageSize, String from, String to, String currencie){
+		
 		
 		List<CotizacionDTO> result = currenciesrepository.findAll().stream()
 			.filter(dto -> dto.getTimestamp()!=null && dto.getTimestamp().getTime()
@@ -139,17 +140,19 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 					&& dto.getTimestamp() !=null && dto.getTimestamp().getTime() 
 				 		<= Utils.getDateFromString(to).getTime()).collect(Collectors.toList()); 
 		
-		System.out.println(result.size()); //total de tamaño - la diferencia que queda por paginar
-		System.out.println("test  " );
+		result = currencie!=null && currencie.length()>1 ? result.stream().filter(dto -> dto.getCurr1().equals(currencie)).collect(Collectors.toList()) : result;
 		
+		if( currencie!=null && currencie.length()>1 )
+			result.stream().filter(dto -> dto.getCurr1().equals(currencie));
+		
+			
 		if(result!=null && result.size()> pageSize ) {
 			if(page * pageSize > result.size()-100)
 				return result.subList(page * pageSize,(page + 1) * pageSize -  (((page+1) * pageSize) - result.size()));
 			else	
 			   return result.subList(page * pageSize, (page + 1) * pageSize);
 		}
-		
-		System.out.println("RESULT SIZE  "+result.size());
+				
 		return result;
 	}
 		

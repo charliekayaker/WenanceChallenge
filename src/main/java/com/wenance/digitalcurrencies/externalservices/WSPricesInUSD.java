@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
+
 import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
 import com.wenance.digitalcurrencies.constants.Constants;
 import com.wenance.digitalcurrencies.enums.Currencies;
@@ -25,18 +25,15 @@ public class WSPricesInUSD extends AbstractClient{
 	@Override
 	public Object execute(Object request) {
 		
-		if(!(request instanceof EnqCurrVal_req))
+		if(!(request instanceof CurrencieValuePayload))
 			throw new IllegalArgumentException("Objeto de negocio no válido para esta operación");
 		
-		Currencies currencie = ((EnqCurrVal_req) request).getCurrencie();
-		
+		Currencies currencie = Currencies.valueOf(((CurrencieValuePayload) request).getCurrencie()); //FALTA EL CURRENCY, VAMOS A TENER QUE DIVIDIR EL PAYLOAD O HACER ALGO PARA QUE RECIBA LO 
 		WebTarget client = createClient(Utils.getValueFromProperties(Constants.CONVERT, Constants.ENDPOINT_FILE_PROPERTIES), currencie);
 		
-		CurrencieValuePayload currencieValuePayload = new CurrencieValuePayload();
-		currencieValuePayload.setAmnt(((EnqCurrVal_req) request).getValue());
 		
 		Response response = client.request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(currencieValuePayload, MediaType.APPLICATION_JSON));
+				.post(Entity.entity(request, MediaType.APPLICATION_JSON));
 		
 		
 		return response.readEntity(CurrencieValuePayload.class);

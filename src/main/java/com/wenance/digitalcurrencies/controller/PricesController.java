@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
-import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
+import com.wenance.digitalcurrencies.bo.RateConvertRequest;
+import com.wenance.digitalcurrencies.bo.RateConvertResponse;
+import com.wenance.digitalcurrencies.custom.ExchangeRateOrquesterCustom;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
@@ -44,7 +45,10 @@ public class PricesController {
 	@Autowired
 	private CurrenciesServiceImpl currenciesServiceImpl;
 	
-	
+	@Autowired
+	private ExchangeRateOrquesterCustom exchangeRateOrquesterCustom;
+
+		
 	@ApiOperation(value = "getPrices", response = CotizacionDTO.class, produces ="application/json")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
 			@ApiResponse(code = 400, message = "Bad request"),
@@ -100,18 +104,20 @@ public class PricesController {
 		return ResponseEntity.ok(currenciesServiceImpl.findLast(currencie));
 	}
 	
-	@ApiOperation(value = "getPriceInUSD", response = CurrencieValuePayload.class, produces ="application/json")
+	@ApiOperation(value = "getPriceInUSD", response = RateConvertResponse.class, produces ="application/json")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
 			@ApiResponse(code = 400, message = "Bad request"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	@PostMapping("/getPriceInUSD/{currencie}")	
-	public ResponseEntity<CurrencieValuePayload> getPriceInUSD(HttpServletRequest request, @PathVariable String currencie) throws IOException{
+	@PostMapping("/getPriceInUSD") // Podríamos poner un @QueryParam para mandar el parámetro del tipo de moneda pero lo recibimos en el json.	
+	public ResponseEntity<RateConvertResponse> getPriceInUSD(HttpServletRequest request) throws IOException{
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		CurrencieValuePayload value = mapper.readValue(request.getInputStream(), CurrencieValuePayload.class);
+		RateConvertRequest _request = mapper.readValue(request.getInputStream(), RateConvertRequest.class);	
 		
-		return ResponseEntity.ok(currenciesServiceImpl.convertToUSD(new EnqCurrVal_req(Currencies.valueOf(currencie), value.getAmnt())));
+		RateConvertResponse response = exchangeRateOrquesterCustom.execute(_request);
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@ApiOperation(value = "Devuelve todas las cotizaciones paginas, opcionalmente se puede acotar las fechas", response = List.class, produces ="application/json")
@@ -119,11 +125,10 @@ public class PricesController {
 			@ApiResponse(code = 400, message = "Bad request"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	@GetMapping("/getPrices/{page}")	
-	public ResponseEntity<List<CotizacionDTO>> getPricesInPageNumber(HttpServletRequest request, @PathVariable String page, @QueryParam(value = "currencie") String currencie, 
-			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to) {
-		
-		System.out.println(" " + currencie + " " + from + " " + to + " " + page);
-		return ResponseEntity.ok(currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to));
+	public ResponseEntity<List<CotizacionDTO>> getPricesInPageNumber(HttpServletRequest request, @PathVariable String page, 
+			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to, @QueryParam(value= "currencie") String currencie) {
+				
+		return ResponseEntity.ok(currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to, currencie));
 	}
 	
 }

@@ -4,11 +4,9 @@ package com.wenance.digitalcurrencies.model;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.wenance.digitalcurrencies.bo.CurrencieValuePayload;
-import com.wenance.digitalcurrencies.bo.EnqCurrVal_req;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
@@ -35,8 +33,8 @@ public interface CurrenciesService {
 	
 	public CotizacionDTO findLast(String currencie);
 	
-	public CurrencieValuePayload convertToUSD(EnqCurrVal_req request);
+	public CurrencieValuePayload convertToUSD(CurrencieValuePayload request);
 	
-	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to);
+	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to, String currencie);
 	
 }
