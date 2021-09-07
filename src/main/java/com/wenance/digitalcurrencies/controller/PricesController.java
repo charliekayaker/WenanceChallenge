@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.QueryParam;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -109,26 +111,36 @@ public class PricesController {
 			@ApiResponse(code = 400, message = "Bad request"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	@PostMapping("/getPriceInUSD") // Podríamos poner un @QueryParam para mandar el parámetro del tipo de moneda pero lo recibimos en el json.	
-	public ResponseEntity<RateConvertResponse> getPriceInUSD(HttpServletRequest request) throws IOException{
+	public ResponseEntity<RateConvertResponse> getPriceInUSD(HttpServletRequest request) throws BadRequestException {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		RateConvertRequest _request = mapper.readValue(request.getInputStream(), RateConvertRequest.class);	
+		RateConvertRequest _request = null;
+		
+		try {
+			_request = mapper.readValue(request.getInputStream(), RateConvertRequest.class);
+		} catch (IOException e) {			
+			throw new BadRequestException();			
+		}	
 		
 		RateConvertResponse response = exchangeRateOrquesterCustom.execute(_request);
 		
 		return ResponseEntity.ok(response);
 	}
 	
-	@ApiOperation(value = "Devuelve todas las cotizaciones paginas, opcionalmente se puede acotar las fechas", response = List.class, produces ="application/json")
+	@ApiOperation(value = "Devuelve todas las cotizaciones páginas, opcionalmente se puede acotar las fechas", response = List.class, produces ="application/json")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success Operation"),
 			@ApiResponse(code = 400, message = "Bad request"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	@GetMapping("/getPrices/{page}")	
 	public ResponseEntity<List<CotizacionDTO>> getPricesInPageNumber(HttpServletRequest request, @PathVariable String page, 
-			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to, @QueryParam(value= "currencie") String currencie) {
-				
-		return ResponseEntity.ok(currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to, currencie));
+			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to, @QueryParam(value= "currencie") String currencie) throws NotFoundException {
+		
+		List<CotizacionDTO> anyPage = currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to, currencie);
+		if(anyPage==null) {
+			throw new NotFoundException("No ha más páginas para mostrar . . . ");
+		}
+		return ResponseEntity.ok(anyPage);
 	}
 	
 }
