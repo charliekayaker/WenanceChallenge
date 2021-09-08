@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.QueryParam;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,6 +23,7 @@ import com.wenance.digitalcurrencies.custom.ExchangeRateOrquesterCustom;
 import com.wenance.digitalcurrencies.dtos.CotizacionDTO;
 import com.wenance.digitalcurrencies.dtos.StatisticsDTO;
 import com.wenance.digitalcurrencies.enums.Currencies;
+import com.wenance.digitalcurrencies.exception.PageNotFoundException;
 import com.wenance.digitalcurrencies.model.CurrenciesServiceImpl;
 import com.wenance.digitalcurrencies.model.MongoDBDate;
 import com.wenance.digitalcurrencies.utils.Utils;
@@ -134,12 +134,18 @@ public class PricesController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	@GetMapping("/getPrices/{page}")	
 	public ResponseEntity<List<CotizacionDTO>> getPricesInPageNumber(HttpServletRequest request, @PathVariable String page, 
-			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to, @QueryParam(value= "currencie") String currencie) throws NotFoundException {
+			@QueryParam(value = "from") String from, @QueryParam(value = "to") String to, @QueryParam(value= "currencie") String currencie) throws PageNotFoundException {
 		
-		List<CotizacionDTO> anyPage = currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to, currencie);
-		if(anyPage==null) {
-			throw new NotFoundException("No ha más páginas para mostrar . . . ");
+		List<CotizacionDTO> anyPage = null;
+		
+		try {
+				anyPage = currenciesServiceImpl.getPaginatedInfo(Integer.parseInt(page), from, to, currencie);
+		
+		}catch(IllegalArgumentException e) {
+			if(e.toString().contains("java.lang.IllegalArgumentException: fromIndex"))
+			throw new PageNotFoundException("No ha más páginas para mostrar . . . ");
 		}
+		
 		return ResponseEntity.ok(anyPage);
 	}
 	

@@ -111,7 +111,7 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 	
 	
 	@Override	
-	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to , String currencie) {	
+	public List<CotizacionDTO> getPaginatedInfo(int page, String from, String to , String currencie) throws IllegalArgumentException {	
 		
 		final int max_rows = 100;
 		
@@ -147,7 +147,7 @@ public class CurrenciesServiceImpl implements CurrenciesService {
 		
 			
 		if(result!=null && result.size()> pageSize ) {
-			if(page * pageSize > result.size()-100)
+			if(page * pageSize > result.size()-pageSize) 
 				return result.subList(page * pageSize,(page + 1) * pageSize -  (((page+1) * pageSize) - result.size()));
 			else	
 			   return result.subList(page * pageSize, (page + 1) * pageSize);
